@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>数组</title>
+</head>
+<body>
+	<input type="text">
+	<script>
+		/**
+		 *返回数组;
+		 */
+		// pattern(7);
+		function pattern(n){
+			var output=[];
+			var ss;
+			if(n<1) return '';
+			var sn = String(n);
+			var lasS = sn.substr(sn.length-1);
+			var jk='';
+			var arr;
+			for(var i=0;i<n;i++){
+				ss="";
+				for(var k =0;k<n;k++){
+					var ssk = String(n-k).substr(String(n-k).length-1);
+					arr=[];
+					if(k>i){
+						ss+=ss.substr(ss.length-1);
+					}else{
+						ss+=ssk+'';
+					}
+
+				}
+				output.push(ss);
+			}
+			console.log(output.join('\n'));
+		}
+
+		/**
+		 * [vectorLength description]
+		 * @param  {[type]} vector [description]
+		 * @return {[type]}        [description]
+		 */
+		// vectorLength([[0, 3],[4, 0]]);
+		function vectorLength(vector){
+		  var num;
+		  var distX = vector[1][0]-vector[0][0];
+		  var distY = vector[1][1]-vector[0][1];
+		  num = Math.abs(Math.sqrt(distX*distX+distY*distY));
+		  if(distX===0){
+		    num = Math.abs(distY);
+		  }
+		  if(distY===0){
+		    num = Math.abs(distX);
+		  }
+		  console.log(num);
+		  //return num;
+		}
+
+		var oInput = document.getElementsByTagName('input')[0];
+		oInput.onchange = function(){
+			console.log(this.value);
+		};
+		console.log(init([40]));
+		function init(arr){
+		  var ar = [];
+		  if(arr.length==1) return arr;
+		  for(var i = 0;i<arr.length-1;i++){
+		    ar.push(arr[i]);
+		  }
+		  return ar;
+		}
+	</script>
+</body>
+</html>

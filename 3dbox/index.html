@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>3D盒子</title>
+</head>
+<style>
+	.c{
+		perspective: 1000px;
+		width: 400px;
+		height: 400px;
+		margin: 0 auto;
+		padding-top: 300px;
+	}
+	.cube{
+		transform:rotateY(0deg);
+		width: 400px;
+		height: 400px;
+		margin: 0 auto;
+		position: relative;
+		/*transition: transform 1s 0.1s ease;*/
+		-webkit-backface-visibility: hidden;
+		-moz-backface-visibility: hidden;
+		backface-visibility: hidden;
+		-webkit-transform-style:preserve-3d;
+		-ms-transform-style:preserve-3d;
+		-o-transform-style:preserve-3d;
+		transform-style:preserve-3d;
+		-webkit-animation: 6s spin linear infinite;
+  		animation: 6s spin linear infinite;
+	}
+	.cube div {
+		position: absolute;
+		width: 400px;
+		height: 400px;
+        text-align: center;
+        line-height: 400px;
+        font-size: 50px;
+        color: #222;
+        /*backface-visibility:hidden;*/
+		
+	}
+	.cube div:nth-child(1){
+		-webkit-transform: rotateY(0deg) translateZ(200px);
+		-ms-transform: rotateY(0deg) translateZ(200px);
+		-o-transform: rotateY(0deg) translateZ(200px);
+		transform: rotateY(0deg) translateZ(200px);
+		border:solid 1px #222;
+	}
+	.cube div:nth-child(2){
+		-webkit-transform: rotateY(90deg) translateZ(200px);
+		-ms-transform: rotateY(90deg) translateZ(200px);
+		-o-transform: rotateY(90deg) translateZ(200px);
+		transform: rotateY(90deg) translateZ(200px);
+		border:solid 1px #222;
+	}
+	.cube div:nth-child(3){
+		-webkit-transform: rotateY(180deg) translateZ(200px);
+		-ms-transform: rotateY(180deg) translateZ(200px);
+		-o-transform: rotateY(180deg) translateZ(200px);
+		transform: rotateY(180deg) translateZ(200px);
+		border:solid 1px #222;
+	}
+	.cube div:nth-child(4){
+		-webkit-transform: rotateY(270deg) translateZ(200px);
+		-ms-transform: rotateY(270deg) translateZ(200px);
+		-o-transform: rotateY(270deg) translateZ(200px);
+		transform: rotateY(270deg) translateZ(200px);
+		border:solid 1px #222;
+	}
+	.cube div:nth-child(5){
+		-webkit-transform: rotateX(90deg) translateZ(200px);
+		-ms-transform: rotateX(90deg) translateZ(200px);
+		-o-transform: rotateX(90deg) translateZ(200px);
+		transform: rotateX(90deg) translateZ(200px);
+		border:solid 1px #222;
+	}
+	.cube div:nth-child(6){
+		-webkit-transform: rotateX(270deg) translateZ(200px);
+		-ms-transform: rotateX(270deg) translateZ(200px);
+		-o-transform: rotateX(270deg) translateZ(200px);
+		transform: rotateX(270deg) translateZ(200px);
+		border:solid 1px #222;
+	}
+
+	@-webkit-keyframes spin {
+	  from {
+	    -webkit-transform: rotateX(0) rotateY(0deg);
+	    transform: rotateX(0) rotateY(0deg);
+	  }
+
+	  to {
+	    -webkit-transform:rotateX(360deg) rotateY(360deg);
+	    transform:rotateX(360deg) rotateY(360deg);
+	  }
+	}
+	@keyframes spin {
+	  from {
+	    -webkit-transform: rotateX(0) rotateY(0deg);
+	    transform: rotateX(0) rotateY(0deg);
+	  }
+
+	  to {
+	    -webkit-transform:rotateX(360deg) rotateY(360deg);
+	    transform:rotateX(360deg) rotateY(360deg);
+	  }
+	}
+</style>
+<body>
+	<div class="c">
+		<div class="cube">
+			<div>1</div>
+			<div>2</div>
+			<div>3</div>
+			<div>4</div>
+			<div>5</div>
+			<div>6</div>
+		</div>
+	</div>
+
+	<script>
+	// var i=0
+	// 	setInterval(function(){
+	// 		i++;
+	// 		document.querySelector('.cube').style.transform = 'rotateY('+i+'deg)';
+	// 	},25);
+	</script>
+</body>
+</html>

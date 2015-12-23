@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>瀑布流图片加载</title>
+</head>
+<style>
+	body{overflow-x: hidden;margin: 0;padding: 0;}
+	.pop{display:none;position: fixed;z-index: 9999;width: 0;height: 0;background: rgba(0,0,0,.8);top: 0;left: 0;text-align: center;vertical-align: middle;}
+	.x{position: absolute;right: 50px; top: 50px;transition:all .5s ease-in-out;cursor: pointer;width: 40px;height: 40px;}
+	.x:before{position: absolute;width: 40px;height: 4px;background: #fff; transform: rotate(45deg);content: '';visibility: visible;left: 0;top: 18px;}
+	.x:after{content: '';visibility: visible;display: block;position: absolute; width: 40px;height: 4px;background: #fff;transform: rotate(-45deg);left: 0;top: 18px;}
+	.x:hover{transform: rotate(-360deg);}
+
+	.line{display: inline-block;width: 1px;margin-left: -1px;height: 100%;vertical-align: middle;}
+	.pop img{vertical-align: middle;display: inline-block;border: solid 1px #fff; background: #fff;}
+	.container{position: relative;width: 100%; margin-top: 20px;}
+	.container img{cursor: pointer;}
+	/*.container img:before{background: #000;}*/
+	.container a{position: absolute;overflow: hidden;}
+	.container a:before{
+		transition:opacity .3s ease-in-out; -webkit-transition:opacity .3s ease-in-out;
+		opacity:0;
+		width: 0;
+		height: 0;
+		content: ' ';
+		visibility: visible;
+		position: absolute;
+		display: block;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 100%);		 /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65))); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%); /* IE10+ */
+		background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.65) 100%); /* W3C */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6000000',GradientType=0 ); /* IE6-9 */
+		z-index: 99;
+	}
+	.container a:hover:before{opacity: 1;}
+	.poplanding{background:url(loader.gif) no-repeat center;position: fixed;z-index: 99999;width: 100%;height: 100%; display: none;}
+	.loading{background: #fff url(loader.gif) no-repeat center;position: fixed;height: 80px;width: 100%;bottom: 0;z-index: 999;}
+</style>
+<body>
+	<div class="container"></div>
+	<div class="loading"></div>
+	<div class="pop"><div class="x"></div><span class="line"></span><img src="loader.gif" width="31" height="31"></div>
+	<!-- <div class="poplanding"></div> -->
+	<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+	<script>
+		var oCont = $('.container');
+		var loading = $('.loading');
+		var iImgWidth = 250;	//设置每个img宽度
+		var iList = 0;			//每排列数
+		var iSpace = 10;
+		var sUrl = 'http://www.wookmark.com/api/json/popular?callback=?';
+		var iOutWidth = iImgWidth+iSpace;
+		var iPage = 0;
+		var arrT = [];
+		var arrL =[];
+		var iMarginl = 0;
+		var iBtn = true;
+		var imgWidth;
+		var imgHeight;
+
+		iList = Math.floor(oCont.width()/iOutWidth); //获取得到每列个数
+		iMarginl = (oCont.width()-(iOutWidth*iList))/2;//左右间距宽度
+
+		oCont.css({
+			marginLeft:iMarginl
+		});
+
+		for(var i=0;i<iList;i++){
+			arrT[i]=0;
+			arrL[i]=iOutWidth*i;
+		}
+		function getData(){
+			if(!iBtn){//防止重复执行
+				return;
+			}
+			iBtn = false;
+			iPage++;
+			$.getJSON(sUrl,{page:iPage},function(data){
+				$('.loading').show();
+				$.each(data,function(index,obj){
+
+					var iHeigth = (iImgWidth/obj.width)*obj.height;
+					var _index = getMin();
+
+					/*jquery对象插入方式*/
+					// var img = $('<img />');
+					// img.css({//
+					// 	width:iImgWidth,
+					// 	height:iHeigth,
+					// 	left:arrL[_index],
+					// 	top:arrT[_index]
+					// });
+					// var objImg = new Image();
+					// 	objImg.src = obj.preview;
+					// objImg.onload = function() {
+					// }
+					// oCont.append(img);
+
+					// for(var k in simg){
+					// 	console.log(simg[k]);
+					// }
+					oCont.append('<a id="'+obj.id+'" href="'+obj.image+'" style="width:'+iImgWidth+'px;height:'+iHeigth+'px;left:'+arrL[_index]+'px;top:'+arrT[_index]+'px;"></a>');
+
+					var oImages = new Image();
+						oImages.src = obj.preview;
+						oImages.onload = function(){
+							$('#'+obj.id).append('<img src="'+this.src+'" width="100%" />');
+						}
+
+					arrT[_index] += iHeigth+10;
+
+					imgClickEvent($('#'+obj.id));
+
+				});
+				setTimeout(function(){
+					loading.hide();
+				},1000);
+				iBtn = true;
+			});
+		}
+		getData();
+		$(window).on('scroll',function(){
+			var iIndex = getMin();
+			var sH = $(window).scrollTop()+$(window).innerHeight();
+
+			if(arrT[iIndex]+20<sH){
+				getData();
+			}
+		});
+
+		$(window).on('resize',function(){
+			var iOldList = iList;
+			iList = Math.floor($(window).width()/iOutWidth);
+			var sWinWidth = $(window).width();
+			iMarginl = (sWinWidth-(iOutWidth*iList))/2;
+			oCont.css({
+				marginLeft:iMarginl
+			});
+			if(iOldList==iList){
+				return;
+			}
+			arrT = [];
+			arrL = [];
+			for(var i = 0;i<iList;i++ ){
+				arrT[i] = 0;
+				arrL[i] = iOutWidth*i;
+			}
+			oCont.find('a').each(function(){
+				var _index = getMin();
+				$(this).animate({
+					left:arrL[_index],
+					top:arrT[_index]
+				}, 300);
+				arrT[_index] += $(this).height()+10;
+			});
+		});
+
+		function getMin(){//获取arrT中最小的那个
+			var ar = arrT[0];
+			var _index = 0;
+			for(var i=1;i<arrT.length;i++){
+				if(arrT[i]<ar){
+					ar = arrT[i];
+					_index = i;
+				}
+			}
+			return _index;
+		}
+
+		function imgClickEvent(o){//图片单击函数
+			o.click(function(e){
+				var sPageX = e.screenX;
+				var sPageY = e.screenY;
+				var __this = $(this);
+				var sWinWidth = $(window).width();
+				var sWinHeight = $(window).height();
+				var sUrlData = o.attr('href');
+				var objSimg = new Image();
+					objSimg.src = sUrlData;
+					$('.pop img').css('display','none');
+					$('.pop').css({
+						'left':o.offset().left,
+						'top':o.offset().top-$(window).scrollTop(),
+						'display':'block',
+						'width':o.width(),
+						'height':o.height(),
+						'opacity':1
+					}).animate({
+						'left':(sWinWidth-o.width())/2,
+						'top':(sWinHeight-o.height())/2
+
+					}, 200).animate({
+						'left':0,
+						'top':0,
+						'width':'100%',
+						'height':'100%'
+					}, 100,function(){
+						$('.pop img').css({'display':'inline-block','opacity':'1'});
+					});
+				objSimg.onload = function(){
+					var sImgW = objSimg.width;
+					var sImgH = objSimg.height;
+
+					if(sImgW>(sWinWidth*0.75)){//宽度大于屏幕宽度0.75
+						imgWidth = sWinWidth*0.75;
+						imgHeight = imgWidth*(sImgH/sImgW);
+
+					}else{
+						imgWidth = sImgW;
+						imgHeight = sImgH;
+					}
+
+					if(imgHeight>(sWinHeight-20)){//高度大于屏幕高度-20
+						imgHeight = sWinHeight-20;
+						imgWidth = sWinHeight*(sImgW/sImgH);
+					}
+					$('.pop img').attr({
+						'src':sUrlData,
+						'width':imgWidth,
+						'height':imgHeight
+					}).css('opacity',0).animate({'opacity':1}, 500);
+					$('body').css({
+						'height':'100%',
+						'overflow':'hidden'
+					});
+				}
+				return false;
+			});
+
+		}
+		function popClose(){//弹出层关闭函数
+			$('.pop').animate({opacity:0}, 400,function(){
+				$(this).css({
+				'width':0,
+				'height':0
+				});
+				$(this).find('img').attr({
+				'src':'loader.gif',
+				'width':'31',
+				'height':'31',
+				'style':'opacity: 0;'
+				});
+				$('body').css('overflow-y','auto');
+			});
+		}
+		$('.pop img').click(popClose);
+		$('.x').click(popClose);
+	</script>
+</body>
+</html>

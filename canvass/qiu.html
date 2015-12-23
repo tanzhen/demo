@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>qiu</title>
+
+</head>
+<style>
+    html,body{
+        height: 100%;
+        width: 100%;
+    }
+    body{
+        margin: 0;
+        padding: 0;
+    }
+</style>
+<body>
+<canvas id="canvas" width="1903" height="700"></canvas>
+<script>
+    
+    var ball = [];
+    var ballColor = ['#FFE1E7','#FF8FA4','#F831A1','#F83149','#FFF730','#FFE1E7','#E7ED96','#C8DA7C','#6B5750','#856863'];
+
+    window.onload = function(){
+        var winW = document.body.clientWidth;
+        var winH = document.body.clientHeight;
+
+        var canvas = document.getElementById('canvas');
+            canvas.width = winW;
+            canvas.height = winH;
+
+        var cot = canvas.getContext('2d');
+
+        setInterval(function(){
+            addball(cot);
+//            console.log(ball.length);
+        },1000);
+
+        setInterval(function(){
+            cotfn(cot);
+            updata(cot);
+        },1000/60);
+
+
+
+    };
+    function addball(cot){
+
+        ball.push({
+            x:Math.ceil(Math.random()*700+15),
+            y:Math.ceil(Math.random()*200+15),
+            r:Math.max(7,Math.ceil(Math.random()*15)),
+            g:Math.max(2,Math.ceil(Math.random()*4)),
+            vx:Math.random()*2>1?-Math.max(2,Math.ceil(Math.random()*7)):Math.max(2,Math.ceil(Math.random()*7)),
+            vy:-Math.ceil(Math.random()*4),
+            color:ballColor[Math.floor(Math.random()*10)]
+        });
+    }
+    function updata(cot){
+
+
+        var cotH = cot.canvas.height;
+        var cotW = cot.canvas.width;
+
+        for(var i=0;i<ball.length;i++){
+
+            ball[i].x += ball[i].vx;
+            ball[i].y += ball[i].vy;
+            ball[i].vy+= ball[i].g;
+
+            if(ball[i].y <= ball[i].r){
+                ball[i].y = ball[i].r;
+                ball[i].vy = -0.7*ball[i].vy;
+            }
+            if(ball[i].y >= cotH-ball[i].r){
+                ball[i].y = cotH-ball[i].r;
+                ball[i].vy = -0.7*ball[i].vy;
+            }
+            if(ball[i].x>=cotW-ball[i].r){
+                ball[i].x = cotW-ball[i].r;
+                ball[i].vx = -0.7*ball[i].vy;
+            }
+            if(ball[i].x<=ball[i].r){
+                ball[i].x = ball[i].r;
+                ball[i].vx = -0.7*ball[i].vy;
+            }
+        }
+
+
+
+    }
+
+    function cotfn(cot){
+        cot.clearRect(0,0,cot.canvas.width,cot.canvas.height);
+        for(var i=0;i<ball.length;i++){
+
+            cot.beginPath();
+            cot.arc(ball[i].x,ball[i].y,ball[i].r,2*Math.PI,false);
+            cot.fillStyle = ball[i].color;
+            cot.closePath();
+            cot.fill();
+
+        }
+
+    }
+
+
+//        canvas.width = document.body.clientWidth;
+//        canvas.height = document.body.clientHeight;
+
+
+
+
+
+
+</script>
+</body>
+</html>

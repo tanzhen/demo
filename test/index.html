@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>随机生成值不同的数组</title>
+</head>
+<body>
+	<script>
+	var qujian = {
+		min : 300,
+		max :800
+	}
+
+	
+	function RandomArr (n,q) {
+		this.n = n;
+		this.hashs = {};
+		this.arr = [];
+		this.d = false;
+	}
+	RandomArr.prototype.method_name = function(first_argument) {
+		var randN;
+		for(var i=0;this.d===false;i++){
+			randN = Math.ceil(Math.random()*800);
+
+			if (!this.hashs[randN]){
+				this.arr.push(randN);
+				this.hashs[randN]=true;
+			}
+			if(this.arr.length>=this.n) this.d=true;
+		}
+
+		return this.arr;
+		//console.log(this.arr.sort(this.sortNumber));
+		
+	};
+
+	RandomArr.prototype.sortNumber = function(a,b) {
+		return a-b;
+	};
+
+	var de = new RandomArr(200);
+		de.method_name();
+
+	</script>
+</body>
+</html>

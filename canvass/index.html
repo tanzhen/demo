@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>canvas</title>
+</head>
+<body>
+	<canvas id="canvas" width="1024" height="720">
+		当前浏览器不支持canvas
+	</canvas>
+
+    <script src="digit.js"></script>
+    <script>
+        var windowWidth = 1920;
+        var windowHeigth = 1080;
+        var iRand = 8;
+        var randMg = 1;
+        var ml = 30;
+        var mt = 110;
+        var sColor = '#38679D';
+
+        window.onload = function (){
+
+            var canvas = document.getElementById('canvas');
+            var context = canvas.getContext('2d');
+
+            canvas.width = windowWidth;
+            canvas.height = windowHeigth;
+
+            setInterval(function(){
+                time(context);
+            },1000);
+        };
+
+        function time(cont){
+            var oData = new Date();
+            var tH = oData.getHours();
+            var tM = oData.getMinutes();
+            var tS = oData.getSeconds();
+            var sTime = addZero(tH)+':'+addZero(tM)+':'+addZero(tS);
+            var mll = 0;//初始化每个数字的距离
+
+            function addZero(s){//个位数添加0
+                s = s<10?'0'+s:s;
+                return s;
+            }
+            cont.clearRect(0,0,1920,1080);
+            /**
+             * context.clearRect(x,y,width,height); 清除画布
+             * x	要清除的矩形左上角的 x 坐标
+             * y	要清除的矩形左上角的 y 坐标
+             * width	要清除的矩形的宽度，以像素计
+             * height	要清除的矩形的高度，以像素计
+             *
+             */
+            for(var i = 0;i<sTime.length;i++){//数字和冒号处理
+
+                switch(sTime[i]){
+                    case ":":
+                            render(mll,mt,cont,10);
+                            mll+= 36*2+ml;
+                    break;
+                    default :
+                            render(mll,mt,cont,parseInt(sTime[i]));
+                            mll+= 63*2+ml;
+                    break;
+                }
+            }
+
+        }
+
+        function render(mgl,mgt,con,ind){//画布函数
+
+            var iDigit = digit[ind];//ind相对应的数组
+            var sPositionL = 0,sPositionT = 0;//每个数字的距画布左上相对位置
+            con.fillStyle = sColor;
+
+            for(var i= 0,ilen = iDigit.length;i<ilen;i++ ){
+                for(var j = 0,jlen=iDigit[i].length;j<jlen;j++){
+                    sPositionL = (2*j*(iRand+randMg))+(iRand+randMg)+mgl;
+                    sPositionT = (2*i*(iRand+randMg))+(iRand+randMg)+mgt;
+                    if(iDigit[i][j] === 1){
+                        con.beginPath();//
+                        con.arc(sPositionL,sPositionT,iRand,2*Math.PI,false);
+                        con.closePath();
+                        con.fill();
+                    }
+                }
+            }
+
+        }
+    </script>
+	<!--<script>-->
+		<!--window.onload = function(){-->
+			<!--var canvas = document.getElementById('canvas');-->
+			<!--var context = canvas.getContext('2d');-->
+
+            <!--/*三角形*/-->
+            <!--context.beginPath();-->
+			<!--context.moveTo(100,100);-->
+			<!--context.lineTo(700,700);-->
+            <!--context.lineTo(100,700);-->
+            <!--context.lineTo(100,100);-->
+
+            <!--context.lineWidth = 5; //定义线条宽度-->
+            <!--context.fillStyle = "rgb(2,100,30)"; //定义填充颜色-->
+            <!--context.fill();//绘制填充-->
+            <!--context.closePath();-->
+			<!--context.stroke();//把之前定义的路径画在画布上（绘制路径）-->
+
+            <!--context.beginPath();-->
+            <!--context.lineWidth = 3;-->
+            <!--context.strokeStyle = 'rgba(15,25,35,.5)';-->
+            <!--context.arc(300,300,100,0,Math.PI);-->
+            <!--context.stroke();-->
+            <!--context.closePath();-->
+
+		<!--}-->
+	<!--</script>-->
+</body>
+</html>
